@@ -8,6 +8,15 @@
   
   <title>Frontend Mentor | Todo app</title>
 
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Load google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap" rel="stylesheet">
+  
+  <script defer src="script.js"></script>
+
   <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
   <style>
     .attribution { font-size: 11px; text-align: center; }
@@ -15,18 +24,39 @@
   </style>
 </head>
 <body>
+  <header>
+    <h1>Todo</h1>
+    <button class="theme-toggle"></button>
+  </header>
+  
+  <div class="todo-item-grid bordered">
+    <label class="left circle" aria-hidden="true">
+      <input class="visually-hidden" type="checkbox">      
+    </label>
+    <input class="center create-todo-input" placeholder="Create a new todo...">    
+  </div>
 
-  Todo
+  <div class="todo-list-wrapper">
+    <ul class="todo-list">
+      <!-- render from script -->
+    </ul>
 
-  <!-- Add dynamic number --> items left
+    <div class="todo-list-footer">
+      <p class="items-left">
+        <span><!-- render from script --></span> 
+        items left
+      </p>
+      <button class="clear-completed-button" data-button="clear-completed">Clear Completed</button>
+    </div>
 
-  All
-  Active 
-  Completed
+    <div class="filter-buttons">
+      <button class="filter-button" data-filter="all">All</button>
+      <button class="filter-button" data-filter="active">Active</button>
+      <button class="filter-button" data-filter="is-completed">Completed</button>
+    </div>    
+  </div>
 
-  Clear Completed
-
-  Drag and drop to reorder list
+  <p class="tips">Drag and drop to reorder list</p>
 
   <div class="attribution">
     Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 

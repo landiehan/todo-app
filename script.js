@@ -62,14 +62,20 @@ const DOM = {
     todoList.append(li);
   },
   updateTodoList(todoList) {
+    // Clear current todo list
     const todoListElement = document.querySelector('.todo-list');
     while (todoListElement.firstChild) {
       todoListElement.firstChild.remove();
     };
 
+    // Render lastest todos
     todoList.forEach((todo) => {
       this.create(todo);
     });
+
+    // Update todo items number
+    const itemsLeft = document.querySelector('.items-left span');
+    itemsLeft.textContent = todoList.length;
   },
   addCreateHandler() {
     const createTodoInput = document.querySelector('.create-todo-input');
@@ -84,35 +90,14 @@ const DOM = {
       }
     });
   },
-  updateItemsLeft(todos) {
-    // Add todo items number
-    const itemsLeft = document.querySelector('.items-left span');
-    itemsLeft.textContent = todos.length;    
-  },
   initClearCompletedButton() {
     const clearCompletedButton = document.querySelector('[data-button="clear-completed"]');
     clearCompletedButton.addEventListener('click', () => {
       TodoList.list = TodoList.list.filter(todo => !todo.isCompleted);
 
-      // this.updateItemsLeft(TodoList.list);
       const filter = localStorage.getItem('filter');
-      switch (filter) {
-        case 'active':
-          todos = TodoList.list.filter(todo => !todo.isCompleted);
-          this.updateTodoList(todos);
-          this.updateItemsLeft(todos);
-          break;
-        case 'is-completed':
-          todos = TodoList.list.filter(todo => todo.isCompleted);
-          this.updateTodoList(todos);
-          this.updateItemsLeft(todos);
-          break;
-        default:
-          todos = TodoList.list;
-          this.updateTodoList(todos);
-          this.updateItemsLeft(todos);
-          break;
-      }
+      const filteredList = getFilteredTodoList(filter);
+      this.updateTodoList(filteredList);
     });
   },
   initFilterButtons() {
@@ -125,23 +110,8 @@ const DOM = {
     const initialFilterElement = document.querySelector(`[data-filter="${initialFilter}"]`);
     initialFilterElement.setAttribute('aria-current', true);
 
-    switch (initialFilter) {
-      case 'active':
-        todos = TodoList.list.filter(todo => !todo.isCompleted);
-        this.updateTodoList(todos);
-        this.updateItemsLeft(todos);
-        break;
-      case 'is-completed':
-        todos = TodoList.list.filter(todo => todo.isCompleted);
-        this.updateTodoList(todos);
-        this.updateItemsLeft(todos);
-        break;
-      default:
-        todos = TodoList.list;
-        this.updateTodoList(todos);
-        this.updateItemsLeft(todos);
-        break;
-    }
+    const filteredList = getFilteredTodoList(initialFilter);
+    this.updateTodoList(filteredList);
 
     // Set event handler
     const filterButtons = document.querySelectorAll('[data-filter]');
@@ -156,26 +126,11 @@ const DOM = {
         console.log(currentFilter, currentFilterElement);
         currentFilterElement.removeAttribute('aria-current');
 
-        let todos = [];
-        switch (filter) {
-          case 'active':
-            todos = TodoList.list.filter(todo => !todo.isCompleted)
-            this.updateTodoList(todos);
-            break;
-          case 'is-completed':
-            todos = TodoList.list.filter(todo => todo.isCompleted);
-            this.updateTodoList(todos);
-            break;
-          default:
-            todos = TodoList.list;
-            this.updateTodoList(todos);
-            break;
-        }
+        const filteredList = getFilteredTodoList(filter);
+        this.updateTodoList(filteredList);
 
         filterButton.setAttribute('aria-current', true);
         localStorage.setItem('filter', filter);
-
-        this.updateItemsLeft(todos);
       });
     });
   }
@@ -218,13 +173,12 @@ const TodoApp = {
     // Initialize DOM
     DOM.updateTodoList(TodoList.list);
     DOM.addCreateHandler();
-    DOM.updateItemsLeft(TodoList.list);
     DOM.initClearCompletedButton(TodoList.list);
     DOM.initFilterButtons(TodoList.list);
   },
   delete(index) {
     TodoList.delete(index);
-    DOM.updateItemsLeft(TodoList.list);
+    DOM.updateTodoList(TodoList.list);
   },
   create(desc) {
     const newId = TodoList.list.length + 1;
@@ -235,3 +189,19 @@ const TodoApp = {
 };
 
 TodoApp.init();
+
+function getFilteredTodoList(filter) {
+  let todos;
+  switch (filter) {
+    case 'active':
+      todos = TodoList.list.filter(todo => !todo.isCompleted);
+      break;
+    case 'is-completed':
+      todos = TodoList.list.filter(todo => todo.isCompleted);
+      break;
+    default:
+      todos = TodoList.list;
+      break;
+  }
+  return todos;
+}

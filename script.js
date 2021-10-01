@@ -39,6 +39,12 @@ const DOM = {
           break;
         }
       }
+
+      const filter = localStorage.getItem('filter') || 'all';
+      if (filter !== 'all') {
+        const filteredList = getFilteredTodoList(filter);
+        this.updateTodoList(filteredList);
+      }
     });
 
     const label = document.createElement('label');
